@@ -152,9 +152,12 @@ updateStatus = function(input,status){
 
 showHint = function(event){
 	var input = $(event.target).closest('.form-group').find('.word');
-	var val = input.val();
-	var next = input.attr('rel').substring(val.length,val.length+1);
-	input.val(val+next);
+	do {
+		var val = input.val();
+		var next = input.attr('rel').substring(val.length,val.length+1);
+		input.val(val+next);
+	} while(input.val().length <= 1);
+	
 	if(checkComplete(input)){
 		updateStatus(input,'error');
 	} else {
@@ -165,7 +168,7 @@ showHint = function(event){
 		cb.prop('checked', true);
 		cb.addClass('autocheck');
 	}
-
+	input.focus();
 	return false;
 };
 
@@ -186,7 +189,8 @@ initInputs = function(){
 	var inputs = $('.word');
 	$.each(inputs,function(key,value){
 		value = $(value);
-		value.val(value.attr('rel').substring(0,1));
+		//value.val(value.attr('rel').substring(0,1));
+		value.attr('placeholder',value.attr('rel').substring(0,1));
 		updateStatus(value,"");
 	});
 };
@@ -194,6 +198,7 @@ initInputs = function(){
 checkInput = function(event){
 
 		var input = $(event.target);
+		/*
 		var text = input.val();
 		var expected = input.attr('rel');
 		var first_letter = expected.substring(0, 1);
@@ -207,6 +212,7 @@ checkInput = function(event){
 				return false;
 			}
 		}
+*/
 
 	if(event.keyCode == 13) {
 		return checkComplete(input);
