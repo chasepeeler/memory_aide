@@ -1,10 +1,27 @@
+var wordRowTemplate = null;
 $(function(){
-
+	_.templateSettings.variable = "rc";
+	wordRowTemplate = _.template($('script.word-row').html());
+	
 	$('#clear_practice').click(function(){
+		clearInputs();
 		initInputs();
 		return false;
 	});
+	
+	$('#show_first_letter').change(initInputs);
 
+	$('#practice_inputs').on('keyup',checkInput);
+	$('#practice_inputs').on('click',function(event){
+		var t = $(event.target);
+		if($(t).is(".help-btn")){
+			showHint(event);
+		} else if($(t).is(".all-btn")){
+			showAll(event);
+		}
+		
+	});
+	
 	$('#input_form').submit(function(event){
 		event.stopPropagation();
 
@@ -14,106 +31,15 @@ $(function(){
 		var words = text.split(/\s+/);
 
 		$('#practice_inputs').html("");
-
+		
 		$.each(words,function(key,word){
+			var data = [];
+			data.num = key;
+			data.word = word;
 			
-			var formGroup = $("<div></div>");
-			formGroup.addClass('form-group');
-			
-			var row = $("<div></div>");
-			row.addClass("row");
-			
-			formGroup.append(row);
-			
-			var colOne = $("<div></div>");
-			colOne.addClass('col-md-9');
-			
-			var colTwo = $("<div></div>");
-			colTwo.addClass('col-md-3');
-			
-			row.append(colOne);
-			row.append(colTwo);
-			
-			var inputId = 'practice_input_' + (key);
-			
-			var label = $("<label></label>");
-			label.html('Word #'+(key+1));
-			label.attr("for",inputId);
-			label.addClass('control-label');
-			label.addClass('sr-only');
-			colOne.append(label);
-			
-			var inputGroup = $('<div></div>');
-			inputGroup.addClass('input-group');
-			
-			colOne.append(inputGroup);
-			
-			var span = $('<span></span>');
-			span.addClass('input-group-addon');
-			
-			var cb = $("<input></input>");
-			cb.attr('type','checkbox');
-			span.append(cb);
-			
-			inputGroup.append(span);
-			
-			
-			var input = $("<input></input>");
-			input.attr('type','text');
-			input.attr('rel',word);
-			input.attr('next','practice_input_'+(key+1));
-			input.attr('id', inputId);
-			input.attr('name', inputId);
-			input.addClass('word');
-			input.addClass('form-control');
-			input.attr('tabindex',key+1);
-			input.attr('aria-describedby',inputId+"_status");
-			input.attr('autocomplete','off');
-			input.keyup(checkInput);
-			inputGroup.append(input);
-			
-			span = $("<span></span>");
-			span.addClass('glyphicon');
-			span.addClass('form-control-feedback');
-			span.attr('aria-hidden',"true");
-			
-			colOne.append(span);
-			
-			span = $("<span></span>");
-			span.addClass('sr-only');
-			span.attr('id',inputId+"_status");
-			
-			colOne.append(span);
-			
-			
-			var btnGrp = $('<div></div>');
-			btnGrp.addClass('btn-group');
-			
-			colTwo.append(btnGrp);
-			
-			var button = $("<button></button>");
-			button.attr('type','button');
-			button.addClass('btn');
-			button.addClass('btn-default');
-			button.html("Hint");
-			button.click(showHint);
-			btnGrp.append(button);
-			
-			
-			button = $("<button></button>");
-			button.attr('type','button');
-			button.addClass('btn');
-			button.addClass('btn-default');
-			button.html("Reveal");
-			button.click(showAll);
-			btnGrp.append(button);
-			
-			
-			
-			
-			$('#practice_inputs').append(formGroup);
-
+			$('#practice_inputs').append(wordRowTemplate(data));
 		});
+		clearInputs();
 		initInputs();
 		$('#practice_form').show('slide',{direction:'up'});
 		$('practice_input_0').focus();
@@ -152,11 +78,16 @@ updateStatus = function(input,status){
 
 showHint = function(event){
 	var input = $(event.target).closest('.form-group').find('.word');
+	var l = 1;
+	if($('#show_first_letter').is(':checked')){
+		l = 2;
+	}
+	
 	do {
 		var val = input.val();
 		var next = input.attr('rel').substring(val.length,val.length+1);
 		input.val(val+next);
-	} while(input.val().length <= 1);
+	} while(input.val().length < l);
 	
 	if(checkComplete(input)){
 		updateStatus(input,'error');
@@ -189,11 +120,23 @@ initInputs = function(){
 	var inputs = $('.word');
 	$.each(inputs,function(key,value){
 		value = $(value);
-		//value.val(value.attr('rel').substring(0,1));
-		value.attr('placeholder',value.attr('rel').substring(0,1));
-		updateStatus(value,"");
+		var p = "";
+		if($('#show_first_letter').is(':checked')){
+			p = value.attr('rel').substring(0,1);
+		}
+		value.attr('placeholder',p);
 	});
 };
+
+clearInputs = function()
+{
+	var inputs = $('.word');
+	$.each(inputs,function(key,value){
+		$(value).val("");
+		updateStatus($(value),"");
+	});
+	
+}
 
 checkInput = function(event){
 

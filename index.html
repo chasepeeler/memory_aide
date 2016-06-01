@@ -21,6 +21,31 @@
 	
 	<script src="memory.js" type="text/javascript"></script>
     <link rel="stylesheet" href="memory.css" type="text/css"/>
+	
+	<script type="text/template" class="word-row">
+		<div class="form-group has-feedback">
+			<div class="row">
+				<div class="col-md-9">
+					<label class="control-label sr-only" for="practice_input_0">Word #<%= (rc.num+1)%></label>
+					<div class="input-group">
+						<span class="input-group-addon">
+							<input class="autocheck" type="checkbox">
+						</span>
+						<input name="practice_input_<%= rc.num%>" tabindex="1" class="word form-control" id="practice_input_<%= rc.num%>" aria-describedby="practice_input_<%= rc.num%>_status" type="text" rel="<%= rc.word%>" next="practice_input_<%= (rc.num+1)%>" autocomplete="off">
+					</div>
+					<span class="glyphicon form-control-feedback glyphicon-warning-sign" aria-hidden="true"></span>
+					<span class="sr-only" id="practice_input_<%=rc.num%>_status"></span>
+				</div>
+				<div class="col-md-3">
+					<div class="btn-group">
+						<button class="btn btn-default help-btn" type="button">Hint</button>
+						<button class="btn btn-default all-btn" type="button">Reveal</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	
 </head>
 <body>
 <div class="container">
@@ -50,15 +75,17 @@
 	<fieldset>
 	<legend>Practice</legend>
 	<div class="row col-md-12">
-	<span style="font-weight: bold">Instructions:</span> Type the word in the box and press enter. If you enter the correct value, then you will automatically be moved to the next word. If you have not entered the correct value, you will remain at the current word.<br><br>
-	At any time you can press the "Hint" button to reveal the next letter, or the "Reveal" button to reveal the entire word. You can utilize the check box to the left of the word to make a note of any words you had trouble with.<br><br>
-	When you are finished, press the "Reset" button to start over.<br><br>
-	<div class="form-group">
-	<label>Show First Letter: <input id="show_first_letter" type="checkbox" checked data-toggle="toggle" data-size="small"></label><br><br>
+		<span style="font-weight: bold">Instructions:</span> Type the word in the box and press enter. If you enter the correct value, then you will automatically be moved to the next word. If you have not entered the correct value, you will remain at the current word.<br><br>
+		At any time you can press the "Hint" button to reveal the next letter, or the "Reveal" button to reveal the entire word. You can utilize the check box to the left of the word to make a note of any words you had trouble with.<br><br>
+		When you are finished, press the "Reset" button to start over.<br><br>
+		<div class="form-group">
+		<label>Show First Letter: <input id="show_first_letter" type="checkbox" checked data-toggle="toggle" data-size="small"></label><br><br>
+		</div>
 	</div>
-	</div>
-	<div id="practice_inputs">
-		
+	<div class="row col-md-12">
+		<div id="practice_inputs">
+			
+		</div>
 	</div>
     <button type="reset" name="Clear" id="clear_practice" class="btn btn-default">Reset</button>
 	</fieldset>

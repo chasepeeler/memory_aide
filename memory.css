@@ -6,4 +6,16 @@ form {
 	margin-bottom: 10px;
 }
 
+.word::-webkit-input-placeholder {
+    color:    #000;
+}
+.word:-moz-placeholder {
+    color:    #000;
+}
+.word::-moz-placeholder {
+    color:    #000;
+}
+.word:-ms-input-placeholder {
+    color:    #000;
+}
 
