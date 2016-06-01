@@ -240,7 +240,7 @@ setCookie = function(cname, cvalue) {
     var d = new Date();
     d.setTime(d.getTime() + (10*365*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    document.cookie = cname + "=" + encodeURIComponent(cvalue) + "; " + expires;
 };
 
 function getCookie(cname) {
@@ -252,7 +252,7 @@ function getCookie(cname) {
 			c = c.substring(1);
 		}
         if (c.indexOf(name) == 0){
-			var val = c.substring(name.length, c.length);
+			var val = decodeURIComponent(c.substring(name.length, c.length));
 			setCookie(cname,val);
 			return val;
 		}
